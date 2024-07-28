@@ -1,0 +1,12 @@
+[package]
+name = "awu"
+version = "0.1.0"
+edition = "2021"
+author = "Skar3Krow"
+description = "This is a Command Line Interface Tool which can be used to run siple commands in a more brain dead way, yaknow cause not everyone is borderline competent"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.5.11", features = ["derive", "cargo"] }

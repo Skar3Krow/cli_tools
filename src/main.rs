@@ -2,7 +2,7 @@
 mod args;
 
 //Function Imports
-use args::{CliTool, EntityType};
+use args::{CatArgs, CliTool, EntityType};
 use clap::Parser;
 use std::fs::{self, DirEntry, File};
 use std::io::{Read, Result};
@@ -19,12 +19,22 @@ fn main() {
             Ok(_) => (),
             Err(e) => eprintln!("Error : {:?}", e),
         },
-        EntityType::Cat(some_file_names) => {
-            match concatenate_function(&some_file_names.files, some_file_names.new) {
-                Ok(_) => (),
-                Err(e) => eprintln!("Error {:?}", e),
+        EntityType::Cat(cat_argument) => match cat_argument {
+            CatArgs::New(new_args) => {
+                match concatenate_new_function(new_args.new_concat_file, &new_args.files) {
+                    Ok(_) => (),
+                    Err(e) => eprintln!("Error : {:?}", e),
+                }
             }
-        }
+            CatArgs::Same(same_args) => match concatenate_same_function(&same_args.files) {
+                Ok(_) => (),
+                Err(e) => eprintln!("Error : {:?}", e),
+            },
+            CatArgs::Dir(dir_args) => match concatenate_dir_function(&dir_args.directory) {
+                Ok(_) => (),
+                Err(e) => eprintln!("Error : {:?}", e),
+            },
+        },
     };
 }
 
@@ -68,7 +78,7 @@ fn print_long_format(entry: &DirEntry) -> Result<()> {
     Ok(())
 }
 
-fn concatenate_function(files: &Option<Vec<String>>, create_new: bool) -> Result<()> {
+fn concatenate_new_function(concat_file: String, files: &Option<Vec<String>>) -> Result<()> {
     let mut contents = String::new();
     match files {
         Some(some_file) => {
@@ -78,14 +88,40 @@ fn concatenate_function(files: &Option<Vec<String>>, create_new: bool) -> Result
                 f.read_to_string(&mut temp_content)?;
                 contents.push_str(&temp_content);
             }
-            if create_new {
-                File::create_new("concat_file.txt")?;
-                fs::write("concat_file.txt", contents)?;
-            } else {
-                fs::write(some_file[0].clone(), contents)?;
-            }
+            fs::write(&concat_file, contents)?;
         }
         None => println!("No files are available"),
     }
+    Ok(())
+}
+
+fn concatenate_same_function(files: &Option<Vec<String>>) -> Result<()> {
+    let mut contents = String::new();
+    match files {
+        Some(some_file) => {
+            for file in some_file {
+                let mut f = File::open(file)?;
+                let mut temp_content = String::new();
+                f.read_to_string(&mut temp_content)?;
+                contents.push_str(&temp_content);
+            }
+            fs::write(some_file[0].clone(), contents)?;
+        }
+        None => println!("No files are available"),
+    }
+    Ok(())
+}
+
+fn concatenate_dir_function(directory: &str) -> Result<()> {
+    let mut contents = String::new();
+    let paths = fs::read_dir(directory)?;
+    for path in paths {
+        let entry = path?;
+        let mut f = File::open(entry.file_name())?;
+        let mut temp_content = String::new();
+        f.read_to_string(&mut temp_content)?;
+        contents.push_str(&temp_content);
+    }
+    fs::write("dir_summation.txt", &contents)?;
     Ok(())
 }

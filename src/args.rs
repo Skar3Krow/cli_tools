@@ -39,10 +39,9 @@ pub struct ListArgs {
 
 #[derive(Debug, Args)]
 pub struct CatArgs {
-    ///File 1
-    #[arg(default_value = "./foo.txt")]
-    pub file_name: String,
-    /// File 2
-    #[arg(default_value = "./foo2.txt")]
-    pub another_file: String,
+    /// Creates a new concatenated file
+    #[arg(long, short)]
+    pub new: bool,
+    /// Takes n number of files as input
+    pub files: Option<Vec<String>>,
 }

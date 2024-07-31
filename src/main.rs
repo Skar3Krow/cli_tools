@@ -20,7 +20,7 @@ fn main() {
             Err(e) => eprintln!("Error : {:?}", e),
         },
         EntityType::Cat(some_file_names) => {
-            match concatenate_function(&some_file_names.file_name, &some_file_names.another_file) {
+            match concatenate_function(&some_file_names.files, some_file_names.new) {
                 Ok(_) => (),
                 Err(e) => eprintln!("Error {:?}", e),
             }
@@ -68,15 +68,24 @@ fn print_long_format(entry: &DirEntry) -> Result<()> {
     Ok(())
 }
 
-fn concatenate_function(first_file_path: &str, another_file_path: &str) -> Result<()> {
-    let mut f = File::open(first_file_path)?;
-    let mut f2 = File::open(another_file_path)?;
-    let mut content = String::new();
-    let mut second_content = String::new();
-    f.read_to_string(&mut content)?;
-    f2.read_to_string(&mut second_content)?;
-    content.push_str(&second_content);
-    fs::write(first_file_path, &content)?;
-    println!("{:?}", &content);
+fn concatenate_function(files: &Option<Vec<String>>, create_new: bool) -> Result<()> {
+    let mut contents = String::new();
+    match files {
+        Some(some_file) => {
+            for file in some_file {
+                let mut f = File::open(file)?;
+                let mut temp_content = String::new();
+                f.read_to_string(&mut temp_content)?;
+                contents.push_str(&temp_content);
+            }
+            if create_new {
+                File::create_new("concat_file.txt")?;
+                fs::write("concat_file.txt", contents)?;
+            } else {
+                fs::write(some_file[0].clone(), contents)?;
+            }
+        }
+        None => println!("No files are available"),
+    }
     Ok(())
 }

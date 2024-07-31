@@ -13,6 +13,8 @@ pub enum EntityType {
     Echo(Repeat),
     /// Lists all the files and directories
     List(ListArgs),
+    /// Concatenates files
+    Cat(CatArgs),
 }
 
 #[derive(Debug, Args)]
@@ -33,4 +35,14 @@ pub struct ListArgs {
     /// Lists in a long listing format
     #[arg(long, short)]
     pub long: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct CatArgs {
+    ///File 1
+    #[arg(default_value = "./foo.txt")]
+    pub file_name: String,
+    /// File 2
+    #[arg(default_value = "./foo2.txt")]
+    pub another_file: String,
 }

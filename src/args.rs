@@ -14,7 +14,6 @@ pub enum EntityType {
     /// Lists all the files and directories
     List(ListArgs),
     /// Concatenates files
-    #[clap(subcommand)]
     Cat(CatArgs),
 }
 
@@ -38,43 +37,11 @@ pub struct ListArgs {
     pub long: bool,
 }
 
-#[derive(Debug, Parser)]
-pub enum CatArgs {
-    /// Creates a new concatenated file
-    New(NewArgs),
+#[derive(Debug, Args)]
+pub struct CatArgs {
     /// Concatenates a directory
-    Dir(DirArgs),
-    /// Concatenates in the same directory
-    Same(SameArgs),
-}
-
-#[derive(Debug, Args)]
-pub struct NewArgs {
-    /// New file to be concatenated
-    #[arg(default_value = "concat_file")]
-    pub new_concat_file: String,
+    #[arg(long, short)]
+    pub dir: bool,
     /// Takes n number of files as input
     pub files: Option<Vec<String>>,
 }
-
-#[derive(Debug, Args)]
-pub struct SameArgs {
-    /// Takes n number of files as input
-    pub files: Option<Vec<String>>,
-}
-
-#[derive(Debug, Args)]
-pub struct DirArgs {
-    /// Takes a directory as input
-    #[arg(default_value = ".")]
-    pub directory: String,
-}
-
-// #[derive(Debug, Args)]
-// pub struct CatArgs {
-//     /// Creates a new concatenated file
-//     #[arg(long, short)]
-//     pub new: bool,
-//     /// Takes n number of files as input
-//     pub files: Option<Vec<String>>,
-// }

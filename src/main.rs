@@ -6,6 +6,7 @@ use args::{CliTool, EntityType};
 use clap::Parser;
 use std::fs::{self, DirEntry, File};
 use std::io::{Read, Result};
+use walkdir::WalkDir;
 
 fn main() {
     let matches = CliTool::parse();
@@ -23,6 +24,12 @@ fn main() {
             match concatenate_function(cat_argument.dir, &cat_argument.files) {
                 Ok(_) => (),
                 Err(e) => eprintln!("Error: {:?}", e),
+            }
+        }
+        EntityType::Find(find_argument) => {
+            match find_file_function(&find_argument.dir_name, &find_argument.file_name) {
+                Ok(_) => (),
+                Err(e) => eprintln!("Error : {}", e),
             }
         }
     };
@@ -94,6 +101,17 @@ fn concatenate_function(is_directory: bool, files: &Option<Vec<String>>) -> Resu
             }
         }
         None => println!("No files are available"),
+    }
+    Ok(())
+}
+
+fn find_file_function(dir_name: &String, file_name: &str) -> Result<()> {
+    for entry in WalkDir::new(dir_name).into_iter().filter_map(|e| e.ok()) {
+        println!("{}", entry.path().display());
+        if entry.file_name().to_str() == Some(file_name) {
+            println!("File Found");
+            break;
+        }
     }
     Ok(())
 }

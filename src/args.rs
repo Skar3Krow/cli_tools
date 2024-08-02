@@ -15,6 +15,8 @@ pub enum EntityType {
     List(ListArgs),
     /// Concatenates files
     Cat(CatArgs),
+    /// Finds file if exists
+    Find(FindArgs),
 }
 
 #[derive(Debug, Args)]
@@ -44,4 +46,13 @@ pub struct CatArgs {
     pub dir: bool,
     /// Takes n number of files as input
     pub files: Option<Vec<String>>,
+}
+
+#[derive(Debug, Args)]
+pub struct FindArgs {
+    /// Area where the file needs to be searched
+    #[arg(default_value = ".")]
+    pub dir_name: String,
+    /// File to be searched
+    pub file_name: String,
 }

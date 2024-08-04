@@ -4,8 +4,9 @@ mod args;
 //Function Imports
 use args::{CliTool, EntityType};
 use clap::Parser;
+use regex::Regex;
 use std::fs::{self, DirEntry, File};
-use std::io::{Read, Result};
+use std::io::{self, BufRead, Read, Result};
 use walkdir::WalkDir;
 
 fn main() {
@@ -30,6 +31,12 @@ fn main() {
             match find_file_function(&find_argument.dir_name, &find_argument.file_name) {
                 Ok(_) => (),
                 Err(e) => eprintln!("Error : {}", e),
+            }
+        }
+        EntityType::Grep(grep_argument) => {
+            match grep_function(&grep_argument.match_text, &grep_argument.file_name) {
+                Ok(_) => (),
+                Err(e) => eprintln!("Error: {:?}", e),
             }
         }
     };
@@ -113,5 +120,19 @@ fn find_file_function(dir_name: &String, file_name: &str) -> Result<()> {
             break;
         }
     }
+    Ok(())
+}
+
+fn grep_function(pattern: &str, filename: &str) -> Result<()> {
+    let re = Regex::new(pattern).map_err(|e| io::Error::new(io::ErrorKind::InvalidInput, e))?;
+    let file = File::open(filename)?;
+    let reader = io::BufReader::new(file);
+    for (index, line) in reader.lines().enumerate() {
+        let line = line?;
+        if re.is_match(&line) {
+            println!("Line - {}: {}", index + 1, line);
+        }
+    }
+
     Ok(())
 }

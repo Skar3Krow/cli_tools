@@ -17,6 +17,8 @@ pub enum EntityType {
     Cat(CatArgs),
     /// Finds file if exists
     Find(FindArgs),
+    /// Matches text in  files
+    Grep(GrepArgs),
 }
 
 #[derive(Debug, Args)]
@@ -54,5 +56,13 @@ pub struct FindArgs {
     #[arg(default_value = ".")]
     pub dir_name: String,
     /// File to be searched
+    pub file_name: String,
+}
+
+#[derive(Debug, Parser)]
+pub struct GrepArgs {
+    /// Text to be matched
+    pub match_text: String,
+    /// File in which you want to match text
     pub file_name: String,
 }

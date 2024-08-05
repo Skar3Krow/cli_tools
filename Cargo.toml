@@ -10,5 +10,6 @@ description = "This is a Command Line Interface Tool which can be used to run si
 
 [dependencies]
 clap = { version = "4.5.11", features = ["derive", "cargo"] }
+colored = "2.1.0"
 regex = "1.10.6"
 walkdir = "2.5.0"

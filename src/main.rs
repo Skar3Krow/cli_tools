@@ -4,6 +4,7 @@ mod args;
 //Function Imports
 use args::{CliTool, EntityType};
 use clap::Parser;
+use colored::*;
 use regex::Regex;
 use std::fs::{self, DirEntry, File};
 use std::io::{self, BufRead, Read, Result};
@@ -12,7 +13,10 @@ use walkdir::WalkDir;
 fn main() {
     let matches = CliTool::parse();
     match matches.entity_type {
-        EntityType::Echo(some_string) => println!("{:?}", some_string.repeated),
+        EntityType::Echo(some_string) => match echo_function(&some_string.repeated_vector) {
+            Ok(_) => (),
+            Err(e) => eprintln!("Error: {}", e),
+        },
         EntityType::List(some_argument) => match list_function(
             &some_argument.directory,
             some_argument.all,
@@ -40,6 +44,16 @@ fn main() {
             }
         }
     };
+}
+
+fn echo_function(some_vector: &Option<Vec<String>>) -> Result<()> {
+    match some_vector {
+        Some(vector) => {
+            println!("{}", vector.join(" ").green())
+        }
+        None => println!("Nothing goin on here"),
+    }
+    Ok(())
 }
 
 fn list_function(directory: &str, display_all: bool, long_format: bool) -> Result<()> {
@@ -75,9 +89,9 @@ fn print_long_format(entry: &DirEntry) -> Result<()> {
     let file_size = file_metadata.len();
     println!(
         "{:<3} {:<5} {:?}",
-        file_type,
+        file_type.red(),
         file_size,
-        entry.file_name().to_string_lossy()
+        entry.file_name().to_string_lossy().green()
     );
     Ok(())
 }
@@ -114,9 +128,8 @@ fn concatenate_function(is_directory: bool, files: &Option<Vec<String>>) -> Resu
 
 fn find_file_function(dir_name: &String, file_name: &str) -> Result<()> {
     for entry in WalkDir::new(dir_name).into_iter().filter_map(|e| e.ok()) {
-        println!("{}", entry.path().display());
         if entry.file_name().to_str() == Some(file_name) {
-            println!("File Found");
+            println!("{}", "File Found".green());
             break;
         }
     }

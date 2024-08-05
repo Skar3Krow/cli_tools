@@ -25,7 +25,7 @@ pub enum EntityType {
 pub struct Repeat {
     /// The sentence to be repeated
     #[arg(default_value = "*cold silence of the universe*")]
-    pub repeated: String,
+    pub repeated_vector: Option<Vec<String>>,
 }
 
 #[derive(Debug, Args)]

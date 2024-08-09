@@ -43,6 +43,18 @@ fn main() {
                 Err(e) => eprintln!("Error: {:?}", e),
             }
         }
+        EntityType::Create(create_argument) => {
+            match create_function(create_argument.directory, create_argument.file_name) {
+                Ok(created_file_name) => {
+                    println!(
+                        "{} \nFile Name: {}",
+                        "File Created".green(),
+                        created_file_name.red()
+                    );
+                }
+                Err(e) => eprintln!("Error: {:?}", e),
+            }
+        }
     };
 }
 
@@ -128,6 +140,7 @@ fn concatenate_function(is_directory: bool, files: &Option<Vec<String>>) -> Resu
 
 fn find_file_function(dir_name: &String, file_name: &str) -> Result<()> {
     for entry in WalkDir::new(dir_name).into_iter().filter_map(|e| e.ok()) {
+        println!("{:?}", entry.path().display());
         if entry.file_name().to_str() == Some(file_name) {
             println!("{}", "File Found".green());
             break;
@@ -148,4 +161,13 @@ fn grep_function(pattern: &str, filename: &str) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn create_function(is_directory: bool, file_name: String) -> Result<String> {
+    if is_directory {
+        println!("{}", "I dunno, create a directory".red());
+    } else {
+        File::create_new(&file_name)?;
+    }
+    Ok(file_name)
 }

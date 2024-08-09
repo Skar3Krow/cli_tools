@@ -19,6 +19,8 @@ pub enum EntityType {
     Find(FindArgs),
     /// Matches text in  files
     Grep(GrepArgs),
+    /// Creates a directory and files
+    Create(CreateArgs),
 }
 
 #[derive(Debug, Args)]
@@ -64,5 +66,14 @@ pub struct GrepArgs {
     /// Text to be matched
     pub match_text: String,
     /// File in which you want to match text
+    pub file_name: String,
+}
+
+#[derive(Debug, Args)]
+pub struct CreateArgs {
+    /// Create a directory
+    #[arg(short, long)]
+    pub directory: bool,
+    /// File Name
     pub file_name: String,
 }

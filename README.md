@@ -12,8 +12,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 3. Cloning the Repository:
 ```
-git clone https://github.com/your-repo/gnu-tools-reimplementation.git
-cd gnu-tools-reimplementation
+git clone https://github.com/Skar3Krow/cli_tools.git
+cd cli_tools
 ```
 
 4. Building the Project:

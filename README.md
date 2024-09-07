@@ -63,11 +63,11 @@ cat [options] [files...n]
 -Description: Searches for files in a directory hierarchy.
 -Usage:
 ```
-find [path...] [options] [expression]
+find [path...] [options] [directory]
 ```
 - Options:
   - -name [pattern]: Search for files matching the given name pattern.
-  - -type [type]: Search for a particular type (e.g., f for regular file, d for directory).
+  - -type [type]: Search in a specific directory.
 
 ### 5. Grep (grep)
 - Description: Searches for patterns within files.
